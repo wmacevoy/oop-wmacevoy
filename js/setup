@@ -1,0 +1,6 @@
+#!/bin/bash
+
+if [ ! -d node_modules/mocha ]
+then
+	docker run -it --rm -v "$PWD":/usr/src/app -w /usr/src/app node:12 npm install mocha
+fi
