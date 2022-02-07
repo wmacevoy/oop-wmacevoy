@@ -1,6 +1,6 @@
 
-class Cord {
-    __constructor__(length, connector, capacity) {
+export class Cord {
+    constructor(length, connector, capacity) {
         this._length = null;
         this.length = length;
         this._connector = null;
@@ -48,9 +48,9 @@ class Cord {
     // cord.opposite
     get opposite() {
         if (this._connector.startsWith("male")) {
-            return "female " + this._connector.substring(4);
+            return "female" + this._connector.substring(4);
         } else {
-            return "male " + this._connector.substring(6);
+            return "male" + this._connector.substring(6);
         }
     }
 
@@ -60,8 +60,8 @@ class Cord {
     }
 }
 
-class Equipment {
-    __constructor__(consumption, connector, enabled) {
+export class Equipment {
+    constructor(consumption, connector, enabled) {
         this._consumption = consumption;
         this._connector = connector;
         this._enabled = enabled;
