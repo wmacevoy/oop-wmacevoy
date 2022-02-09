@@ -1,2 +1,7 @@
 #!/bin/bash
-docker build -t js . && docker run -v "$PWD:/app" -p 8080:8080 -t js
+
+# in powershell, maybe
+# docker build -t js . -and docker run -v "$(pwd):/app" -p 8080:8080 js
+
+# in bash
+docker build -t js . && docker run -v "$(pwd):/app" -p 8080:8080 js
