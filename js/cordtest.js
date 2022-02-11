@@ -1,9 +1,9 @@
-import { Cord, Equipment } from './cord.js'
+import { Cord, Equipment } from './cord.mjs'
 
 const yellow = new Cord(25,"female 240 twist lock",40);
 
 
-console.assert(yellow.capacity === 40);
+console.assert(yellow.capacity === 41);
 console.assert(yellow.connector === "female 240 twist lock");
 console.assert(yellow.length === 25);
 console.assert(yellow.opposite === "male 240 twist lock");
