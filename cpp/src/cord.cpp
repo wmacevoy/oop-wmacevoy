@@ -11,7 +11,7 @@ namespace power
         }
         else
         {
-            throw new std::out_of_range("length must be positive");
+            throw std::out_of_range("length must be positive");
         }
     }
     Cord::Cord(double length, const std::string &connector, double capacity)
