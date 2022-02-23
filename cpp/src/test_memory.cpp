@@ -23,14 +23,14 @@
 class FusedCord : public power::Cord {
     private: bool m_fuseOk;
     private: std::string m_fuseType;
-    public: FusedCord(double length, const std::string &connector, double capacity)
-        : Cord(length,connector,capacity)
+    public: FusedCord(int line, double length, const std::string &connector, double capacity)
+        : Cord(line,length,connector,capacity)
     {
         m_fuseOk = true;
         m_fuseType = "funnest type!";
         std::cout << "FusedCord@" 
              << (void*) this 
-             << " constructed." 
+             << " from " << m_constructedOn << " constructed." 
              << std::endl;
     }
 
@@ -38,7 +38,7 @@ class FusedCord : public power::Cord {
     {
         std::cout << "FusedCord@" 
              << (void*) this 
-             << " destructed." 
+             << " from " << m_constructedOn << " destructed." 
              << std::endl;
     }
 
@@ -54,14 +54,14 @@ TEST(FusedCord,Ok) {
     string connector = "female 3-prong";
     double capacity = 20.0;
 
-    FusedCord fusedCord(length, connector, capacity); // automatic
-    FusedCord *pFusedCord = new FusedCord(length, connector, capacity);
-    Cord cord = FusedCord(length, connector, capacity);  // compiles but almost 
+    FusedCord fusedCord(__LINE__,length, connector, capacity); // automatic
+    FusedCord *pFusedCord = new FusedCord(__LINE__,length, connector, capacity);
+    Cord cord = FusedCord(__LINE__,length, connector, capacity);  // compiles but almost 
                               // certainly broken (object truncation)
-    Cord *pCord = new FusedCord(length, connector, capacity); // better
+    Cord *pCord = new FusedCord(__LINE__,length, connector, capacity); // better
     // .. delete pCord;
-    SPCord spCord (new FusedCord(length, connector, capacity)); // correct
+    SPCord spCord (new FusedCord(__LINE__,length, connector, capacity)); // correct
 
-    spCord = SPCord(new FusedCord(length, connector, capacity));
+    spCord = SPCord(new FusedCord(__LINE__,length, connector, capacity));
     // ...
 }

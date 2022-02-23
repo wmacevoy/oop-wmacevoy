@@ -10,7 +10,7 @@ TEST(Cord, Constructor) {
     string connector = "female 3-prong";
     double capacity = 20.0;
     
-    Cord cord(length, connector, capacity);
+    Cord cord(__LINE__,length, connector, capacity);
 
     ASSERT_EQ(cord.length(), length);
     //ASSERT_EQ(cord.connector(), connector);
@@ -22,7 +22,7 @@ TEST(Cord, Length) {
     string connector = "female 3-prong";
     double capacity = 20.0;
     
-    Cord cord(length, connector, capacity);
+    Cord cord(__LINE__,length, connector, capacity);
 
     ASSERT_EQ(cord.length(), length);
 
@@ -37,7 +37,7 @@ TEST(Cord, BadLength) {
     string connector = "female 3-prong";
     double capacity = 20.0;
     
-    Cord cord(length, connector, capacity);
+    Cord cord(__LINE__,length, connector, capacity);
 
     ASSERT_EQ(cord.length(), length);
 
