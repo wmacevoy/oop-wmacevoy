@@ -1,2 +1,2 @@
 #!/bin/bash
-docker build -t cpp . && docker run --rm cpp test_cord
+docker build -t cpp . && docker run --rm cpp "$@"
