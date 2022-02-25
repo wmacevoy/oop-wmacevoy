@@ -57,11 +57,10 @@ TEST(FusedCord,Ok) {
     FusedCord fusedCord(__LINE__,length, connector, capacity); // automatic
     FusedCord *pFusedCord = new FusedCord(__LINE__,length, connector, capacity);
     Cord cord = FusedCord(__LINE__,length, connector, capacity);  // compiles but almost 
-                              // certainly broken (object truncation)
     Cord *pCord = new FusedCord(__LINE__,length, connector, capacity); // better
     // .. delete pCord;
     SPCord spCord (new FusedCord(__LINE__,length, connector, capacity)); // correct
-
+    ASSERT_EQ(cord.length(),length+1);                          // certainly broken (object truncation)
+ 
     spCord = SPCord(new FusedCord(__LINE__,length, connector, capacity));
-    // ...
 }

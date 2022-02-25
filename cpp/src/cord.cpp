@@ -15,7 +15,18 @@ namespace power
             throw std::out_of_range("length must be positive");
         }
     }
+    Cord::Cord(const Cord &copy) 
+      : m_constructedOn(copy.m_constructedOn), 
+        m_length(copy.m_length), 
+        m_capacity(copy.m_capacity), 
+        m_connector(copy.m_connector)
+      {
+        std::cout << "Cord@" 
+             << (void*) this 
+             << " copied from " << (const void*) &copy 
+             << std::endl;
 
+      }
     Cord::Cord(int constructedOn, double length, const std::string &connector, double capacity)
         : m_constructedOn(constructedOn), m_length(checkedLength(length)), m_connector(connector), m_capacity(capacity)
     {

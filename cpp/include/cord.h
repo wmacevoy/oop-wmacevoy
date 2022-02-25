@@ -5,6 +5,7 @@
 
 namespace power {
   class Cord {
+      public: Cord(const Cord &copy);
       public: const int m_constructedOn;
       private: double m_length;
       private: std::string m_connector;
