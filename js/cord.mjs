@@ -1,6 +1,16 @@
 
-export class Cord {
-    constructor(length, connector, capacity) {
+export class Device {
+    constructor(ip) {
+        this._ip = ip;
+    }
+    api(json, callback) {
+        console.log("sent " + JSON.stringify(json) + " to " + this._ip);
+        setTimeout(()=>callback({ 'status': 200, 'response': json}), 100);
+    }
+}
+export class Cord extends Device {
+    constructor(ip, length, connector, capacity) {
+        super(ip);
         this._length = null;
         this.length = length;
         this._connector = null;
@@ -60,6 +70,50 @@ export class Cord {
     }
 }
 
+// mixin
+export class Fused extends Device {
+    get fuseOk() {
+        return this._fuseOk;
+    }
+    trip() {
+        this._fuseOk = false;
+    }
+    reset() {
+        this._fuseOk = true;
+    }
+}
+
+export class FusedCord extends Cord
+{
+    constructor(ip, length, connector, capacity, fuseOk,fuseType) {
+        super(ip, length, connector, capacity);
+        this._fuseOk = fuseOk;
+        this._fuseType = fuseType;
+    }
+}
+// https://blog.bitsrc.io/understanding-mixins-in-javascript-de5d3e02b466
+function mixin(target, ...src) {
+    for (let mixed of src) {
+        for (var property of Object.getOwnPropertyNames(mixed.prototype)) {
+            if (property != 'constructor') {
+                target.prototype[property] = mixed.prototype[property]
+            }
+        }
+    }
+}
+
+mixin(FusedCord,Fused);
+
+
+let myCord = new FusedCord("127.0.0.1",10,"male 3 prong",20,true,"iso 3322");
+
+myCord.reset();
+
+myCord.fuseOk
+
+//console.log(`cord fuse ok: ${myCord._fuseOk}`);
+
+
 export class Equipment {
     constructor(consumption, connector, enabled) {
         this._consumption = consumption;
@@ -70,5 +124,7 @@ export class Equipment {
 
 export default {
     Cord,
+    Fused,
+    FusedCord,
     Equipment
 }

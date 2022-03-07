@@ -1,5 +1,11 @@
 <!DOCTYPE html>
+<!-- var cord=null; import('./cord.mjs').then(m => cord = m); -->
 <link href="node_modules/mocha/mocha.css" rel="stylesheet" />
 <script type="module" src="node_modules/mocha/mocha.js"></script>
-<script type="module" src="test/test.mjs"></script>
+<!-- <script type="module" src="cord.mjs"></script> -->
+<script >
+  var cord=null; 
+  import('./cord.mjs').then(m => cord = m);
+</script>
+
 <div id="mocha"></div>
