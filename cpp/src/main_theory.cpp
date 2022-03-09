@@ -24,11 +24,12 @@ struct Equipment {
 };
 
 bool Cord::compatible(Equipment &equipment) {
-    if (!equipment.plugged  && x != 3) {
-        // ...
-        return true;
-    }
-    return false;
+  cout << "Cord::compatible()" << endl;
+  if (!equipment.plugged  && x != 3) {
+    // ...
+    return true;
+  }
+  return false;
 }
 
 struct FusedCord : Cord {
@@ -91,4 +92,9 @@ void foo() {
     cout << cCord->vftbl->compatible(cCord,*equipment) << endl;
 
 
+}
+
+int main() {
+  foo();
+  return 0;
 }
