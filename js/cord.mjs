@@ -72,8 +72,11 @@ export class Cord extends Device {
 
 // mixin
 export class Fused extends Device {
-    get fuseOk() {
+    getFuseOk() {
         return this._fuseOk;
+    }
+    setFuseOk(value) {
+        this._fuseOk = value;
     }
     trip() {
         this._fuseOk = false;
@@ -105,13 +108,17 @@ function mixin(target, ...src) {
 mixin(FusedCord,Fused);
 
 
+
 let myCord = new FusedCord("127.0.0.1",10,"male 3 prong",20,true,"iso 3322");
 
 myCord.reset();
 
-myCord.fuseOk
+console.log(myCord.getFuseOk());
 
-//console.log(`cord fuse ok: ${myCord._fuseOk}`);
+console.log(`fused cord is fusedcord: ${myCord instanceof FusedCord}`);
+console.log(`fused cord is cord: ${myCord instanceof Cord}`);
+console.log(`fused cord is device: ${myCord instanceof Device}`);
+console.log(`fused cord is fused: ${myCord instanceof Fused}`);
 
 
 export class Equipment {
