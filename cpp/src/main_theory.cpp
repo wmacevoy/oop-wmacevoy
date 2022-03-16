@@ -73,7 +73,7 @@ CCord *CCord_constructor(CCord *me, int _capacity) {
 
 struct FusedCord : Cord {
     bool fuseOk;
-    FusedCord(int capacity) : Cord(capacity) { fuseOk = true; }
+    FusedCord(int capacity) : Cord(capacity), fuseOk(true) { }
 
     virtual bool compatible(const Equipment &equipment) const override {
         cout << "FusedCord::compatible()" << endl;
@@ -139,32 +139,40 @@ CFusedCord *CFusedCord_constructor(CFusedCord *me, int capacity) {
   me->fuseOk=true;
   return me;
 }
-
-struct lastly
+struct __lastly__
 {
-  operator bool() { throw std::runtime_error(""); }
+  static void nothing() {}
   std::function<void()> fini;
-  explicit lastly(const std::function<void()> &_fini) : fini(_fini) {}
-  lastly(const lastly &copy) = delete;
-  lastly &operator=(const lastly &assign) = delete;  
-  ~lastly() { fini(); }
+  __lastly__(const std::function <void()> &_fini=nothing) : fini(_fini) {}
+  __lastly__ &operator=(const std::function<void()> &_fini) {
+     fini=_fini;
+   return *this;
+  }
+  ~__lastly__() { fini(); }
+
+  __lastly__(const __lastly__ &copy) = delete;
+  __lastly__ &operator=(const __lastly__ &assign) = delete;  
 };
+
+#define lastly_suffix(suffix) __lastly__ __lastly_ ## suffix; __lastly_ ## suffix = [&]
+#define lastly_counter(counter) lastly_suffix(counter)
+#define lastly lastly_counter(__COUNTER__)
 
 void foo() {
     Cord *cppCord = new Cord(10);
-    lastly deleteCppCord([&] { delete cppCord; });
-    FusedCord *cppFusedCord = new FusedCord(15);
-    lastly deleteCppFusedCord([&] { delete cppFusedCord; });    
-    CCord *cCord = CCord_constructor(NULL,10);
-    lastly destructCCord([&] { cCord->vftbl->destructor(cCord); });
-    CFusedCord *cFusedCord = CFusedCord_constructor(NULL,15);
-    lastly destructCFusedCord([&] { cFusedCord->vftbl->destructor(cFusedCord); });
+        lastly { delete cppCord; };
+    FusedCord *cppFusedCord = new FusedCord(15); 
+        lastly { delete cppFusedCord; };
+    CCord *cCord = CCord_constructor(NULL,10); 
+        lastly { cCord->vftbl->destructor(cCord); };
+    CFusedCord *cFusedCord = CFusedCord_constructor(NULL,15); 
+        lastly { cFusedCord->vftbl->destructor(cFusedCord); };
 
     cout << cppCord->watts() << endl;
     cout << cppFusedCord->watts() << endl;    
     cout << cCord->vftbl->watts(cCord) << endl;
     cout << cFusedCord->vftbl->watts(cFusedCord) << endl;    
-    
+
     Equipment *equipment = new Equipment(15);
 
     cout << cppCord->compatible(*equipment) << endl;
@@ -179,7 +187,7 @@ void foo() {
     CCord *cFusedCordAsCCord = (CCord*)(cFusedCord);
     cout << cppFusedCordAsCord->compatible(*equipment) << endl;
     cout << cFusedCordAsCCord->vftbl->compatible(cFusedCordAsCCord,*equipment) << endl;    
-    
+
 }
 
 int main() {
