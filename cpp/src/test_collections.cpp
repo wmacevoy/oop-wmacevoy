@@ -51,6 +51,9 @@ TEST(vector,strings) {
     std::sort(a.begin(),a.end());
     std::vector < std::string > :: iterator i = 
       std::find(a.begin(),a.end(), "thing");
+
+    std::sort(cords.begin(),cords.end(),
+      [a](auto x,auto y) { a.size(); return x.length < y.length; });
     
     auto j = std::find(a.begin(),a.end(), "thing");
 }
