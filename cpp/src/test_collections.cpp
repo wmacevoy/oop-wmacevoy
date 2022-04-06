@@ -35,11 +35,28 @@
 #include <gtest/gtest.h>
 
 struct Cord {
+    std::string plug;
     int length;
-    Cord(int _length) : length(_length) {};
+    Cord(const std::string &_plug, int _length) 
+    : plug(_plug), length(_length) {};
+    virtual bool connects(const std::string &otherPlug) const {
+       return plug == otherPlug;
+    }
 };
+
+struct FusedCord : Cord {
+   bool fuseOk;
+    FusedCord(const std::string &_plug, int _length) : Cord(_plug,_length), fuseOk(true) {}
+
+    virtual bool connects(const std::string &otherPlug) const override {
+       return fuseOk && plug == otherPlug;
+    }
+};
+
 #include <vector> 
 #include <list>
+#include <compare>
+
 //
 // a[3] value is a[key]
 //
@@ -57,7 +74,7 @@ bool CordSort(const Cord &a, const Cord &b) {
 
 TEST(vector,strings) {
     Strings  a(33);
-    std::vector < Cord > cords(10,Cord(0));
+    std::vector < Cord > cords(10,Cord("3-prong",0));
     // cords[5] = *(cords.begin()+5)
 
     // a[5]=*(a.begin()+5);
@@ -75,6 +92,31 @@ TEST(vector,strings) {
        [direction](auto x,auto y) { return direction*x.length < direction*y.length; });
     
     auto j = std::find(a.begin(),a.end(), "thing");
+}
+
+TEST(vector,heirarchy) {
+  std::vector<std::shared_ptr<Cord> > cords;
+
+  cords.push_back(std::shared_ptr<Cord>(new Cord("3-prong",10)));
+  cords.push_back(std::shared_ptr<Cord>(new FusedCord("3-prong",10)));
+  cords.push_back(std::shared_ptr<Cord>(new Cord("2-prong",10)));
+
+  for (auto &cord1 : cords) {
+      for (auto &cord2 : cords) {
+         std::cout << cord1->connects(cord2->plug);
+      }
+      std::cout << std::endl;
+  }
+
+  std::cout << "break fuse" << std::endl;
+  dynamic_cast<FusedCord&>(*cords[1]).fuseOk = false;
+
+  for (auto &cord1 : cords) {
+      for (auto &cord2 : cords) {
+         std::cout << cord1->connects(cord2->plug);
+      }
+      std::cout << std::endl;
+  }
 }
 
 // map is a mapping from keys (of some type) to values (of some type)
@@ -136,6 +178,59 @@ TEST(map,simple) {
   }
 }
 
+// For your own keys - how can the STL decide where to
+// place a key in the balanced binary tree?
+//
+//  Ans: you have to provide an ordering.
+//
+//    1. Provide < and == for your key types.
+//       bool operator<(const T& a, const T & b) { ... }
+//       <,<=,==,!=,>=,>  six operators to define
+//
+//       <=> spaceship operator  (int +1/0/-1 for < , = , or > )
+//       
+//    2. Provide a custom comparator to a set/map.
+//
+//
+
+std::strong_ordering operator<=>(const Cord &a, const Cord &b) {
+  if (a.plug != b.plug) return a.plug <=> b.plug;
+  return a.length <=> b.length;
+}
+
+std::ostream& operator<<(std::ostream &out, const Cord &cord) {
+  return (((((out << "a ") << cord.length) << " meter ") << cord.plug) << "cord");
+}
+ 
+TEST(set,custom) {
+  std::set<Cord> cords;
+  cords.insert(Cord("3-prong",12));
+  cords.insert(Cord("2-prong",10));
+  cords.insert(Cord("2-prong",10));
+  cords.insert(Cord("2-prong",10));
+  cords.insert(Cord("2-prong",10));
+  cords.insert(Cord("3-prong",10));
+
+  for (auto& cord : cords) {
+    std::cout << cord << std::endl;
+  }
+
+}
+
+TEST(map,custom) {
+  std::map<Cord, std::set < std::string > > locations;
+  locations[Cord("3-prong",12)].insert("living room");
+  locations[Cord("3-prong",12)].insert("kichen");
+  locations[Cord("2-prong",10)].insert("garage");
+
+  for (auto &cordLocs : locations) {
+    std::cout << cordLocs.first << " may be in:";
+    for (auto &loc : cordLocs.second) {
+       std::cout << " " << loc;
+    }
+    std::cout << std::endl;
+  }
+}
 // so for your own things, you have to provide some way
 // to order the keys (map) memebers (set).
 
