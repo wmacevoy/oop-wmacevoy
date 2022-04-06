@@ -109,6 +109,8 @@ TEST(vector,heirarchy) {
   }
 
   std::cout << "break fuse" << std::endl;
+
+  // safely cast the Cord& in the vector to FusedCord& to access the fuse...
   dynamic_cast<FusedCord&>(*cords[1]).fuseOk = false;
 
   for (auto &cord1 : cords) {
