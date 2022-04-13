@@ -110,7 +110,45 @@ TEST(vector,heirarchy) {
 
   std::cout << "break fuse" << std::endl;
 
+  // Pointers are are addresses of stuff (64 bits usuaally),
+  //   they can be NULL.
+  //
+  //     int *x = new int; // allocate an int on the heap,
+  //                       // result of "new" is that address.
+  //     foo() {
+  //        int y;
+  //        int *x = &y;
+  //        x = new int;
+  //
+  //        int *const z = &y;
+  //        *z  = 3; // (make y 3)
+  //        z = new int; // compile time error
+  //        
+  //        if (z != NULL) *z = 3;
+  //     }
+  //
+  // Refrence is a const pointer to something (not null).
+  //    since you can't the pointer, and it can't be null,
+  //    saying *ref is redundant, so, just ref means *ref.
+  //
+  //          int &r = y; <-->  int * const _r = &y;
+  //          r = 3;      <--->  *_r = 3;
+  //
+  //     
   // safely cast the Cord& in the vector to FusedCord& to access the fuse...
+  
+  // cords - vec<shared_ptr<Cord>>
+  // cords[1] - shared_ptr<Cord> 
+  //   Cord& operator*() {  return *owned; }
+  // *cords[1] -- Cord&  // actually is FusedCord&
+  //  dynamic_cast<FusedCord&> -- upcast from Cord& to FusedCord&
+  //     this cast is run-time checked.  If you tried to upcast,
+  //     and the thing wasn't FusedCord& - exception'
+  //   So (ref).fuseOk = false is modifying some FusedCord.
+  //
+  //
+  // cords[1].fuseOk = false;  // js version - no types
+
   dynamic_cast<FusedCord&>(*cords[1]).fuseOk = false;
 
   for (auto &cord1 : cords) {

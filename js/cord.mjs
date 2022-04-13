@@ -1,8 +1,50 @@
 
+
+export class DeviceObserver {
+    deviceNotification(device, bulletin) {}
+}
 export class Device {
     constructor(ip) {
         this._ip = ip;
+        this._observers = new Array();
+        this._postponements = new Array();
+        this._notifying = false;
     }
+
+    removeObserver(observer) {
+        if (this._notifying) {
+            this._postponements.push(() => {this.removeObserver(observer)})
+            return;
+        }
+        for (let i=0; i<this._observers.length; ++i) {
+            if (this._observers[i] === observer) {
+                this._observers.splice(i,1);
+            }
+        }
+    }
+
+    addObserver(observer) {
+        if (this._notifying) {
+            this._postponements.push(() => {this.addObserver(observer)})
+            return;
+        }
+        this.removeObserver(observer);
+        this._observers.push(observer);
+    }
+
+    _notify(bulletin) {
+        this._notifying = true;
+        for (let i=0; i<this._observers.length; ++i) {
+            this._observers[i].deviceNotification(this,bulletin)
+        }
+        while (this._postponements.length > 0) {
+            let postponements = this._postponements;
+            this._postponements = new Array();
+            postponements.forEach((postponement) => { postponement(); });
+        }
+        this._notifying = false;
+    }
+
     api(json, callback) {
         console.log("sent " + JSON.stringify(json) + " to " + this._ip);
         setTimeout(()=>callback({ 'status': 200, 'response': json}), 100);
