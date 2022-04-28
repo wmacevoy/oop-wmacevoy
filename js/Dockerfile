@@ -1,5 +1,5 @@
 # Build: docker build -t js .
-# Run: docker run -v "$PWD:/app" -p 8080:8080 -t js
+# Run: docker run -v "${PWD}:/app" -p 8080:8080 -t js
 
 FROM node:14-alpine
 # Adding build tools to make yarn install work on Apple silicon / arm64 machines
